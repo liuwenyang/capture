@@ -1,5 +1,10 @@
 import cv2
 from datetime import datetime
+import os
+import config_loader  # 引入配置加载模块
+
+config = config_loader.load_config()
+
 
 def save_video(rtsp_url, duration, output_path):
     """保存摄像头的视频流"""
@@ -16,7 +21,7 @@ def save_video(rtsp_url, duration, output_path):
             out.write(frame)
     cap.release()
     out.release()
-# if __name__ == '__main__':
-#     #显示视频窗口
-#     cv2.namedWindow("Video", cv2.WINDOW_NORMAL)
-#     cv2.resizeWindow("Video", 640, 480)
+
+
+if __name__ == '__main__':
+

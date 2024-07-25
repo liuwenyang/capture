@@ -19,4 +19,4 @@ def load_config(config_path='config.yaml'):
 
 if __name__ == '__main__':
     config = load_config()
-    print(config)
+    print(config['camera_0']['rtsp_url'])
