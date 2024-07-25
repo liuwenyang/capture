@@ -1,10 +1,19 @@
 output_folder: r"D:\开源项目\capture"
-
-camera_0:
-  name: "526摄像机_装车南料位西"
-  rtsp_url: "rtsp://admin:blt12345@10.226.13.40:554/h264/ch1/main/av_stream"
-  video_length: 60  # 单位秒
+camera:
+  0:
+    name: "526摄像机_装车南料位西"
+    rtsp_url: "rtsp://admin:blt12345@10.226.13.40:554/h264/ch1/main/av_stream"
+    video_length: 30  # 单位秒
+  1:
+    name: "526摄像机_装车南料位东"
+    rtsp_url: "rtsp://admin:blt12345@10.226.13.41:554/h264/ch1/main/av_stream"
+    video_length: 30  # 单位秒
 docker:
-  log_lines: 2000
-  container_name: "cli"
+  0:
+    container_name: "cli"
+    log_lines: 2000 # 单位行
+  1:
+    container_name: "ser"
+    log_lines: 2000 # 单位行
+
 
