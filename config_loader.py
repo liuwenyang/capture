@@ -26,5 +26,6 @@ def load_config(config_path='config.yaml'):
 if __name__ == '__main__':
     config = load_config()
     #检查我的config.yaml里有多少个camera
-    for camera in config['camera']:
-        print(camera)
+    #for camera in config['camera']:
+        #打印每个camera的name
+        #print(config['camera'][camera]['rtsp_url'])
