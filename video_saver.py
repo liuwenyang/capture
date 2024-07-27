@@ -72,14 +72,7 @@ def save_video(rtsp_url, video_length):
         cap.release()
         cv2.destroyAllWindows()
 
-def signal_listener():
-    """监听信号以触发视频保存"""
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind(("localhost", 12345))
-    while True:
-        data, _ = sock.recvfrom(1024)
-        if data.strip() == b"0001":
-            save_video_flag.set()
+
 
 def start_all_cameras():
     threads = []
