@@ -13,7 +13,7 @@ def save_docker_logs(container_name, lines, output_path):
     full_path = os.path.join(output_path, filename)
     # 创建日志文件并将docker日志写入其中
     with open(full_path, 'w') as file:
-        subprocess.run(['docker', 'logs', '--tail', str(lines), container_name], stdout=file)
+        subprocess.run(['docker', 'logs', '-t', '--tail', str(lines), container_name], stdout=file)
     print(f"日志已保存到 {full_path}")
 
 if __name__ == "__main__":
