@@ -13,7 +13,7 @@ def main():
     config = load_config(config_path)
 
     # 启动网络监听线程
-    listener_thread = threading.Thread(target=listen_for_signal, args=('0.0.0.0', 12345, '0001'))
+    listener_thread = threading.Thread(target=listen_for_signal, args=('127.0.0.1', 12345, '0001'))
     listener_thread.start()
 
     # 启动 Docker 日志缓存进程
@@ -25,7 +25,7 @@ def main():
     video_thread.start()
 
     # 等待信号以创建文件夹并开始保存数据
-    if listen_for_signal('0.0.0.0', 12345, '0001'):
+    if listen_for_signal('127.0.0.1', 12345, '0001'):
         print("收到信号 0001")
         output_folder = create_folder(config['output_folder'])
 
@@ -34,7 +34,7 @@ def main():
 
         
         # 通知视频保存模块保存视频到新路径
-        save_video_flag.set()
+        
 
     # 退出时清理资源
     def cleanup():
