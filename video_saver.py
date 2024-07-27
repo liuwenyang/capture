@@ -6,12 +6,8 @@ import config_loader  # 引入配置加载模块
 from collections import deque
 import network_listener from start_save_flag  # type: ignore # 引入网络监听模块，并获取start_save_flag
 
-config = config_loader.load_config()
 
-output_path = config['output_path']
-video_length = config['video_length']
-
-def save_video(rtsp_url,video_name, video_length, output_path):
+def save_video(rtsp_url,video_name-'default', video_length=30, output_path):
     """缓存摄像头的视频流"""
     # 打开RTSP流
     cap = cv2.VideoCapture(rtsp_url)
@@ -66,7 +62,6 @@ def save_video(rtsp_url,video_name, video_length, output_path):
                 # 释放VideoWriter对象
                 out.release()
                 print("视频保存完成")
-                save_video_flag.clear()
 
     finally:
         # 释放VideoCapture对象
