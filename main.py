@@ -1,6 +1,6 @@
 import threading
 import os
-from config_loader import load_config
+from config_loader import SingletonConfig
 from network_listener import listen_for_signal
 from video_saver import start_all_cameras
 

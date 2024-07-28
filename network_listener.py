@@ -2,8 +2,8 @@ import socket
 import threading
 import queue
 import folder_creator
-from config_loader import load_config
-from log_saver import start_all_docker_logs
+from config_loader import SingletonConfig
+#from log_saver import start_all_docker_logs
 # 创建一个 Queue 对象 保存路径信息
 q = queue.Queue()
 # 加载配置文件
