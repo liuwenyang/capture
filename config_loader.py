@@ -13,8 +13,7 @@ get_config 方法：这个方法返回加载的配置对象，确保该对象在
 class SingletonConfig:
     _instance = None
     _config = None
-
-    def __new__(cls, config_path='/home/storage/capture/.config/config.yaml'):
+    def __new__(cls, config_path='config.yaml'):
         if cls._instance is None:
             cls._instance = super(SingletonConfig, cls).__new__(cls)
             cls._config = cls._load_config(config_path)
