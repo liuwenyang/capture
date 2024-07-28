@@ -7,7 +7,7 @@ from collections import deque
 import network_listener from start_save_flag  # type: ignore # 引入网络监听模块，并获取start_save_flag
 
 
-def save_video(rtsp_url,video_name-'default', video_length=30, output_path):
+def save_video(rtsp_url, video_length=30, video_name='default', output_path):
     """缓存摄像头的视频流"""
     # 打开RTSP流
     cap = cv2.VideoCapture(rtsp_url)
@@ -70,10 +70,10 @@ def save_video(rtsp_url,video_name-'default', video_length=30, output_path):
 
 
 
-def start_all_cameras():
+def start_all_cameras(config):
     threads = []
     for camera in config['camera']:
-        t = threading.Thread(target=save_video, args=(camera['rtsp_url'],camera['name'], camera['video_length'], output_path))
+        t = threading.Thread(target=save_video, args=(camera['rtsp_url'], camera['video_length'], camera['name'], config['output_folder']))
         threads.append(t)
         t.start()
 
