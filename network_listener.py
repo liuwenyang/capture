@@ -7,11 +7,10 @@ from log_saver import start_all_docker_logs
 # 创建一个 Queue 对象 保存路径信息
 q = queue.Queue()
 # 加载配置文件
-config_path = 'config.yaml'
 #使用单例模式 确保config是全局唯一的
 # 加载配置文件
 config_singleton = SingletonConfig()
-config = config_singleton.get_config(config_path)
+config = config_singleton.get_config("D:\开源项目\capture\config.yaml")
 
 class SocketServer:
     def __init__(self, ip='127.0.0.1', port=12345):

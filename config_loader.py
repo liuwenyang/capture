@@ -13,7 +13,8 @@ get_config 方法：这个方法返回加载的配置对象，确保该对象在
 class SingletonConfig:
     _instance = None
     _config = None
-    def __new__(cls, config_path='config.yaml'):
+
+    def __new__(cls, config_path='/home/storage/capture/.config/config.yaml'):
         if cls._instance is None:
             cls._instance = super(SingletonConfig, cls).__new__(cls)
             cls._config = cls._load_config(config_path)
@@ -42,7 +43,7 @@ class SingletonConfig:
 
 # 使用单例模式获取配置
 if __name__ == '__main__':
-    config_singleton = SingletonConfig()
+    config_singleton = SingletonConfig("D:\开源项目\capture\config.yaml")
     config = config_singleton.get_config()
     # 检查我的config.yaml里有多少个camera
     # for camera in config['camera']:
