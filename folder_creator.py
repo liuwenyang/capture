@@ -1,6 +1,5 @@
 import os
 from datetime import datetime
-from network_listener import start_save_flag
 
 def create_folder(base_path):
     """创建基于当前日期时间的文件夹"""
@@ -16,12 +15,8 @@ def create_folder(base_path):
     return path
 
 if __name__ == "__main__":
-    # while start_save_flag.is_set():  # type: ignore
-    #     create_folder(r"D:\MatrixSoftware\项目现场同步资料\补连塔\.测试记录表\7.27")
-    #     start_save_flag.clear()  # type: ignore
-    if start_save_flag.is_set():  # type: ignore
-        create_folder(r"D:\MatrixSoftware\项目现场同步资料\补连塔\.测试记录表\7.28")
-        start_save_flag.clear()  # type: ignore
+    create_folder(r"D:\MatrixSoftware\项目现场同步资料\补连塔\.测试记录表\7.28")
+
 
 
 

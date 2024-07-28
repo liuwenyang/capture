@@ -2,12 +2,12 @@ import threading
 import cv2
 from datetime import datetime
 import os
-import config_loader  # 引入配置加载模块
 from collections import deque
-import network_listener from start_save_flag  # type: ignore # 引入网络监听模块，并获取start_save_flag
+from network_listener import  q
 
 
-def save_video(rtsp_url, video_length=30, video_name='default', output_path):
+
+def save_video(rtsp_url, video_length=30, video_name='default'):
     """缓存摄像头的视频流"""
     # 打开RTSP流
     cap = cv2.VideoCapture(rtsp_url)
@@ -42,13 +42,14 @@ def save_video(rtsp_url, video_length=30, video_name='default', output_path):
             # 将帧添加到缓存队列
             frame_buffer.append(frame)
 
-            # 检查是否触发保存操作
-            if start_save_flag.is_set(): # type: ignore
+            # 如果路径队列里有内容，则保存视频
+            if q.qsize() > 0:
+                output_path = q.get()
                 # 获取当前时间并格式化为字符串
                 now = datetime.now()
                 current_time = now.strftime("%Y年%m月%d日") + f"{now.hour}时{now.minute}分{now.second}秒"
                 # 构建输出视频文件的完整路径
-                output_file = os.path.join(output_path, f"{current_time}.mp4")
+                output_file = os.path.join(output_path, f"{video_name}_{current_time}.mp4")
                 
                 print(f"保存之前{video_length}秒的视频到 {output_file}...")
                 
@@ -73,7 +74,7 @@ def save_video(rtsp_url, video_length=30, video_name='default', output_path):
 def start_all_cameras(config):
     threads = []
     for camera in config['camera']:
-        t = threading.Thread(target=save_video, args=(camera['rtsp_url'], camera['video_length'], camera['name'], config['output_folder']))
+        t = threading.Thread(target=save_video, args=(camera['rtsp_url'], camera['video_length'], camera['name']))
         threads.append(t)
         t.start()
 
@@ -81,4 +82,7 @@ def start_all_cameras(config):
         t.join()
 
 if __name__ == '__main__':
-    start_all_cameras()
+    #start_all_cameras()
+    # 从队列中获取数据
+    data = q.get()
+    print(data)  # 输出: Hello, World!

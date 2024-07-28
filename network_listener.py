@@ -1,8 +1,13 @@
 import socket
 import threading
+import queue
+import folder_creator
+from config_loader import load_config
+from log_saver import start_all_docker_logs
+# 创建一个 Queue 对象 保存路径信息
+q = queue.Queue()
 
-start_save_flag = threading.Event()
-
+config = load_config()
 class SocketServer:
     def __init__(self, ip='127.0.0.1', port=12345):
         self.ip = ip
@@ -28,15 +33,18 @@ def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
                 data, _ = server_socket.recvfrom(1024)
                 if data.decode() == signal:
                     print(f'收到信号: {data.decode()}')
-                    start_save_flag.set()
-                    print(f"start_save_flag状态:{start_save_flag}")
+                    path = folder_creator.create_folder(config['output_folder'])
+                    q.put(path)
+                    print(f"path: {path}已存入队列")
+                    #start_all_docker_logs(config,path)
+                    
+                    
         except KeyboardInterrupt:
             print("Server interrupted by user.")
         except Exception as e:
             print(f"An error occurred: {e}")
         finally:
-            start_save_flag.clear()
-            print(f"start_save_flag状态:{start_save_flag}")
+            q.clear()
 
 if __name__ == '__main__':
     try:

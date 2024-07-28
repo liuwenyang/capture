@@ -17,12 +17,12 @@ def save_docker_logs(container_name, lines, output_path):
         subprocess.run(['docker', 'logs', '-t', '--tail', str(lines), container_name], stdout=file)
     print(f"日志已保存到 {full_path}")
 
-def start_all_docker_logs(config):
+def start_all_docker_logs(config,path):
     """启动所有Docker容器并保存它们的日志"""
     threads = []
     # 遍历容器ID并保存日志
     for docker in config['docker']:
-        t = threading.Thread(target=save_docker_logs, args=(docker['rtsp_url'], docker['video_length'], docker['name'], config['output_folder']))
+        t = threading.Thread(target=save_docker_logs, args=(docker['container_name'], docker['log_lines'], path))
         threads.append(t)
         t.start()
 

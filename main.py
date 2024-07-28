@@ -10,15 +10,12 @@ from log_saver import save_docker_logs
 def main():
     # 加载配置文件
     config_path = '/home/storage/capture/.config/config.yaml'
+    #使用单例模式 确保config是全局唯一的
     config = load_config(config_path)
 
     # 启动网络监听线程
     listener_thread = threading.Thread(target=listen_for_signal, args=('127.0.0.1', 12345, '0001'))
     listener_thread.start()
-
-    # 启动 Docker 日志缓存进程
-    docker_thread = threading.Thread(target=save_docker_logs)
-    docker_thread.start()
 
     # 启动视频缓存进程
     video_thread = threading.Thread(target=start_all_cameras)
@@ -31,7 +28,6 @@ def main():
 
     try:
         listener_thread.join()
-        docker_thread.join()
         video_thread.join()
     except KeyboardInterrupt:
         cleanup()
