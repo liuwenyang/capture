@@ -6,8 +6,11 @@ from config_loader import load_config
 from log_saver import start_all_docker_logs
 # 创建一个 Queue 对象 保存路径信息
 q = queue.Queue()
+# 加载配置文件
+config_path = '/home/storage/capture/.config/config.yaml'
+#使用单例模式 确保config是全局唯一的
+config = load_config(config_path)
 
-config = load_config()
 class SocketServer:
     def __init__(self, ip='127.0.0.1', port=12345):
         self.ip = ip
