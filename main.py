@@ -24,18 +24,6 @@ def main():
     video_thread = threading.Thread(target=start_all_cameras)
     video_thread.start()
 
-    # 等待信号以创建文件夹并开始保存数据
-    if listen_for_signal('127.0.0.1', 12345, '0001'):
-        print("收到信号 0001")
-        output_folder = create_folder(config['output_folder'])
-
-        
-        # 将路径传递给相应的进程
-
-        
-        # 通知视频保存模块保存视频到新路径
-        
-
     # 退出时清理资源
     def cleanup():
         print("清理资源...")
