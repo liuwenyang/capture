@@ -3,7 +3,7 @@ import cv2
 from datetime import datetime
 import os
 from collections import deque
-from network_listener import event
+from main import event
 
 def save_video(rtsp_url, video_length=30, video_name='default'):
     """缓存摄像头的视频流"""

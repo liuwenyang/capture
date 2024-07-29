@@ -2,7 +2,16 @@ import threading
 from config_loader import config
 from network_listener import listen_for_signal
 from video_saver import start_all_cameras
+from threading import Lock
+from dataclasses import dataclass
 
+@dataclass
+class Event:
+    output_folder_path: str
+    log_saver: int
+    video_saver: int
+    lock: Lock = Lock()  # 添加锁
+event = Event(None, 0, 0)
 
 # 主程序入口
 def main():

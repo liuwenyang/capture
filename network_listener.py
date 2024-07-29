@@ -1,18 +1,8 @@
 import socket
-from threading import Lock
-from dataclasses import dataclass
 import folder_creator
 from config_loader import config
 from log_saver import start_all_docker_logs
 
-
-@dataclass
-class Event:
-    output_folder_path: str
-    log_saver: int
-    video_saver: int
-    lock: Lock = Lock()  # 添加锁
-event = Event(None, 0, 0)
 
 class SocketServer:
     def __init__(self, ip='127.0.0.1', port=12345):

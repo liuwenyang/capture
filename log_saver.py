@@ -2,7 +2,7 @@ import subprocess
 import threading
 from datetime import datetime
 import os
-from network_listener import event
+from main import event
 
 def save_docker_logs(container_name, lines, output_path):
     """保存指定容器的Docker日志"""
