@@ -2,7 +2,6 @@ import socket
 import threading
 import queue
 import folder_creator
-from config_loader import SingletonConfig
 from log_saver import start_all_docker_logs
 from config_loader import config
 
