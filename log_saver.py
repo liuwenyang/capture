@@ -28,7 +28,7 @@ def start_all_docker_logs(config,path):
     threads = []
     # 遍历容器ID并保存日志
     for docker in config['docker']:
-        t = threading.Thread(target=save_docker_logs, args=(docker['container_name'], docker['log_lines'], path))
+        t = threading.Thread(target=save_docker_logs, args=(config['docker'][docker]['container_name'], config['docker'][docker]['log_lines'], path))
         threads.append(t)
         t.start()
 
