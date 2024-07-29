@@ -14,7 +14,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 
     # 检查是否成功打开流
     if not cap.isOpened():  
-        print("无法打开RTSP流")
+        print(f"无法打开{rtsp_url}的RTSP流")
         return
 
     # 获取视频的帧宽度和高度

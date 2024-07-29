@@ -5,6 +5,11 @@ import os
 
 def save_docker_logs(container_name, lines, output_path):
     """保存指定容器的Docker日志"""
+    #检查容器名是否能访问到
+    subprocess.run(['docker', 'ps', '-q', '--filter', f'name={container_name}'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if subprocess.returncode!= 0:
+        print(f"容器 {container_name} 不存在")
+        return
     # 获取当前时间并格式化为字符串
     now = datetime.now()
     current_time = now.strftime("%Y年%m月%d日") + f"{now.hour}时{now.minute}分{now.second}秒"
@@ -15,7 +20,8 @@ def save_docker_logs(container_name, lines, output_path):
     # 创建日志文件并将docker日志写入其中
     with open(full_path, 'w') as file:
         subprocess.run(['docker', 'logs', '-t', '--tail', str(lines), container_name], stdout=file)
-    print(f"日志已保存到 {full_path}")
+    print(f"容器 {container_name} 的日志已保存到 {full_path}")
+
 
 def start_all_docker_logs(config,path):
     """启动所有Docker容器并保存它们的日志"""

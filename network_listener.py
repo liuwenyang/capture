@@ -11,7 +11,11 @@ q = queue.Queue()
 # 加载配置文件
 config_singleton = SingletonConfig("D:\开源项目\capture\config.yaml")
 config = config_singleton.get_config()
-
+def clear_queue(q):
+    """清理队列中的所有项目"""
+    while not q.empty():
+        q.get()
+    print("Queue cleared.")
 class SocketServer:
     def __init__(self, ip='127.0.0.1', port=12345):
         self.ip = ip
@@ -36,7 +40,7 @@ def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
             while True:
                 data, _ = server_socket.recvfrom(1024)
                 if data.decode() == signal:
-                    print(f'收到信号: {data.decode()}')
+                    print(f'收到来自{ip}:{port}的信号: {data.decode()}')
                     path = folder_creator.create_folder(config['output_folder'])
                     q.put(path)
                     print(f"path: {path}已存入队列")
@@ -48,7 +52,7 @@ def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
         except Exception as e:
             print(f"An error occurred: {e}")
         finally:
-            q.clear()
+            clear_queue(q)
 
 if __name__ == '__main__':
     try:
