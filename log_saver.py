@@ -2,6 +2,7 @@ import subprocess
 import threading
 from datetime import datetime
 import os
+from network_listener import event
 
 def save_docker_logs(container_name, lines, output_path):
     """保存指定容器的Docker日志"""
@@ -10,6 +11,7 @@ def save_docker_logs(container_name, lines, output_path):
     
     if result.returncode != 0 or not result.stdout.strip():
         print(f"容器 {container_name} 不存在")
+        event.log_saver -= 1
         return
 
     # 获取当前时间并格式化为字符串
@@ -22,6 +24,7 @@ def save_docker_logs(container_name, lines, output_path):
     # 创建日志文件并将docker日志写入其中
     with open(full_path, 'w') as file:
         subprocess.run(['docker', 'logs', '-t', '--tail', str(lines), container_name], stdout=file)
+        event.log_saver -= 1
     print(f"容器 {container_name} 的日志已保存到 {full_path}")
 
 
@@ -30,6 +33,7 @@ def start_all_docker_logs(config,path):
     threads = []
     # 遍历容器ID并保存日志
     for docker in config['docker']:
+        event.video_saver += 1
         t = threading.Thread(target=save_docker_logs, args=(config['docker'][docker]['container_name'], config['docker'][docker]['log_lines'], path))
         threads.append(t)
         t.start()

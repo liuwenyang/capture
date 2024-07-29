@@ -1,21 +1,18 @@
 import socket
-import threading
-import queue
+from threading import Lock
+from dataclasses import dataclass
 import folder_creator
 from config_loader import config
 from log_saver import start_all_docker_logs
 
-# 创建一个 Queue 对象 保存路径信息
-q = queue.Queue()
 
-# 全局变量，保存文件夹路径
-output_folder_path = None
-
-def clear_queue(q):
-    """清理队列中的所有项目"""
-    while not q.empty():
-        q.get()
-    print("Queue cleared.")
+@dataclass
+class Event:
+    output_folder_path: str
+    log_saver: int
+    video_saver: int
+    lock: Lock = Lock()  # 添加锁
+event = Event(None, 0, 0)
 
 class SocketServer:
     def __init__(self, ip='127.0.0.1', port=12345):
@@ -35,7 +32,7 @@ class SocketServer:
             print("Server socket closed.")
 
 def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
-    global output_folder_path
+
     with SocketServer(ip, port) as server_socket:
         try:
             while True:
@@ -43,10 +40,11 @@ def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
                     data, _ = server_socket.recvfrom(1024)
                     if data.decode() == signal:
                         print(f'收到来自{ip}:{port}的信号: {data.decode()}')
-                        if output_folder_path is None:
+                        if event.video_saver < 1 and event.log_saver < 1:
+
                             output_folder_path = folder_creator.create_folder(config['output_folder'])
-                            q.put(output_folder_path)
-                            print(f"path: {output_folder_path}已存入队列")
+                            event.output_folder_path = output_folder_path
+                            print (f"event流程已进入output_folder_path: {event.output_folder_path}")
                             start_all_docker_logs(config, output_folder_path)
                 except Exception as inner_e:
                     print(f"An error occurred inside loop: {inner_e}")
@@ -55,7 +53,8 @@ def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
         except Exception as e:
             print(f"An error occurred: {e}")
         finally:
-            clear_queue(q)
+            output_folder_path = None
+
 
 if __name__ == '__main__':
     try:
