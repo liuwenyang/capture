@@ -76,7 +76,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 def start_all_cameras(config):
     threads = []
     for camera in config['camera']:
-        t = threading.Thread(target=save_video, args=(camera['rtsp_url'], camera['video_length'], camera['name']))
+        t = threading.Thread(target=save_video, args=(config['camera'][camera]['rtsp_url'], config['camera'][camera]['video_length'], config['camera'][camera]['name']))
         threads.append(t)
         t.start()
 

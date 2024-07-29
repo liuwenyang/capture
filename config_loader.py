@@ -41,11 +41,11 @@ class SingletonConfig:
     def get_config(self):
         return self._config
     # 加载配置文件
-config_singleton = SingletonConfig("D:\开源项目\capture\config.yaml")
+config_singleton = SingletonConfig(r"D:\开源项目\capture\config.yaml")
 config = config_singleton.get_config()
 # 使用单例模式获取配置
 if __name__ == '__main__':
-    config_singleton = SingletonConfig("D:\开源项目\capture\config.yaml")
+    config_singleton = SingletonConfig(r"D:\开源项目\capture\config.yaml")
     config = config_singleton.get_config()
     # 检查我的config.yaml里有多少个camera
     # for camera in config['camera']:

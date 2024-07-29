@@ -13,7 +13,7 @@ def main():
     listener_thread.start()
 
     # 启动视频缓存进程
-    video_thread = threading.Thread(target=start_all_cameras,args=config)
+    video_thread = threading.Thread(target=start_all_cameras, args=(config,))
     video_thread.start()
 
     # 退出时清理资源
