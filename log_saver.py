@@ -2,9 +2,10 @@ import subprocess
 import threading
 from datetime import datetime
 import os
-from main import event
+
 
 def save_docker_logs(container_name, lines, output_path):
+    from main import event
     """保存指定容器的Docker日志"""
     # 检查容器名是否存在
     result = subprocess.run(['docker', 'ps', '-q', '--filter', f'name={container_name}'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)

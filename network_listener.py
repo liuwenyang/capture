@@ -4,6 +4,7 @@ from config_loader import config
 from log_saver import start_all_docker_logs
 
 
+
 class SocketServer:
     def __init__(self, ip='127.0.0.1', port=12345):
         self.ip = ip
@@ -22,7 +23,7 @@ class SocketServer:
             print("Server socket closed.")
 
 def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
-
+    from main import event
     with SocketServer(ip, port) as server_socket:
         try:
             while True:

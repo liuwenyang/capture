@@ -3,9 +3,10 @@ import cv2
 from datetime import datetime
 import os
 from collections import deque
-from main import event
 
 def save_video(rtsp_url, video_length=30, video_name='default'):
+    from main import event
+
     """缓存摄像头的视频流"""
     # 打开RTSP流
     cap = cv2.VideoCapture(rtsp_url)
