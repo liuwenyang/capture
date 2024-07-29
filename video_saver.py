@@ -74,6 +74,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 
 
 def start_all_cameras(config):
+    from main import event
     threads = []
     for camera in config['camera']:
         event.video_saver += 1
@@ -85,4 +86,4 @@ def start_all_cameras(config):
         t.join()
 
 if __name__ == '__main__':
-    #start_all_cameras()
+    start_all_cameras()
