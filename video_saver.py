@@ -5,9 +5,6 @@ import os
 from collections import deque
 from network_listener import event
 
-def get_queue_content(q):
-    with q.mutex:
-        return list(q.queue)
 def save_video(rtsp_url, video_length=30, video_name='default'):
     """缓存摄像头的视频流"""
     # 打开RTSP流
@@ -88,4 +85,3 @@ def start_all_cameras(config):
 
 if __name__ == '__main__':
     #start_all_cameras()
-    # 从队列中获取数据
