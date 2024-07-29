@@ -4,7 +4,7 @@ import queue
 import folder_creator
 from config_loader import SingletonConfig
 from log_saver import start_all_docker_logs
-from main import config
+from config_loader import config
 
 
 # 创建一个 Queue 对象 保存路径信息
