@@ -4,13 +4,14 @@ import queue
 import folder_creator
 from config_loader import SingletonConfig
 from log_saver import start_all_docker_logs
+from main import config
+
+
 # 创建一个 Queue 对象 保存路径信息
 q = queue.Queue()
 # 加载配置文件
 #使用单例模式 确保config是全局唯一的
-# 加载配置文件
-config_singleton = SingletonConfig("D:\开源项目\capture\config.yaml")
-config = config_singleton.get_config()
+
 def clear_queue(q):
     """清理队列中的所有项目"""
     while not q.empty():

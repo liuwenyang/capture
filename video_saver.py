@@ -5,8 +5,9 @@ import os
 from collections import deque
 from network_listener import  q
 
-
-
+def get_queue_content(q):
+    with q.mutex:
+        return list(q.queue)
 def save_video(rtsp_url, video_length=30, video_name='default'):
     """缓存摄像头的视频流"""
     # 打开RTSP流
@@ -44,7 +45,8 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 
             # 如果路径队列里有内容，则保存视频
             if q.qsize() > 0:
-                output_path = q.get()
+                output_paths = get_queue_content(q)
+                output_path = output_paths[0]
                 # 获取当前时间并格式化为字符串
                 now = datetime.now()
                 current_time = now.strftime("%Y年%m月%d日") + f"{now.hour}时{now.minute}分{now.second}秒"
