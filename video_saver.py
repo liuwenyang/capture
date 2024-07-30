@@ -24,7 +24,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
     # 定义视频编解码器
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-    print("开始缓存视频帧...")
+    print(f"开始缓存{rtsp_url}{video_name}的视频帧...")
 
     # 创建一个双端队列来存储帧
     frame_buffer = deque(maxlen=video_length * 20)  # 假设20 fps
