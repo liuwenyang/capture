@@ -1,5 +1,6 @@
 import threading
 from config_loader import config
+from log_saver import start_all_docker_logs
 from network_listener import listen_for_signal
 from video_saver import start_all_cameras
 from threading import Lock
@@ -24,6 +25,9 @@ def main():
     video_thread = threading.Thread(target=start_all_cameras, args=(config,))
     video_thread.start()
 
+    # 启动日志缓存进程
+    log_thread = threading.Thread(target=start_all_docker_logs, args=(config,))
+    log_thread.start()
     # 退出时清理资源
     def cleanup():
         print("清理资源...")

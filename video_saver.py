@@ -44,7 +44,8 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
             frame_buffer.append(frame)
 
             # 如果路径非空           
-            if event.output_folder_path is not None:
+            if event.output_folder_path is not None and event.video_saver > 0:
+
                 # 获取当前时间并格式化为字符串
                 now = datetime.now()
                 current_time = now.strftime("%Y年%m月%d日") + f"{now.hour}时{now.minute}分{now.second}秒"
@@ -77,7 +78,7 @@ def start_all_cameras(config):
     from main import event
     threads = []
     for camera in config['camera']:
-        event.video_saver += 1
+        print(f"开始缓存{config['camera'][camera]['name']}的视频流...")
         t = threading.Thread(target=save_video, args=(config['camera'][camera]['rtsp_url'], config['camera'][camera]['video_length'], config['camera'][camera]['name']))
         threads.append(t)
         t.start()
