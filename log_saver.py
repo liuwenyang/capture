@@ -14,6 +14,9 @@ def save_docker_logs(container_name, lines):
         print(f"容器 {container_name} 不存在")
         event.log_saver -= 1
         return
+    event.log_saver += 1
+    print(f"流程进入save_docker_logs前event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}, event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}")
+
     while True:
         if event.output_folder_path is not None and event.log_saver > 0:
 

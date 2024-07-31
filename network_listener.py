@@ -34,20 +34,13 @@ def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
                     if data.decode() == signal:
                         print(f'收到来自{ip}:{port}的信号: {data.decode()}')
                         event.usage_count += 1
-                        print(f"event.usage_count: {event.usage_count}")
-                        print(f"流程进入前event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}")
-                        event.output_folder_path = folder_creator.create_folder(config['output_folder'])
-                        print (f"event流程已进入create_folder output_folder_path:{event.output_folder_path}")
+                        event.video_saver = 0 ; event.log_saver = 0 ; event.output_folder_path = None
                         for docker in config['docker']:
-                            print(f"开始保存容器 {config['docker'][docker]['container_name']} 的日志",f" File: {__name__}, Line: {__file__}")
                             event.log_saver += 1
                         for camera in config['camera']:
-                            print(f"开始保存摄像头 {config['camera'][camera]['rtsp_url']} 的视频",f" File: {__name__}, Line: {__file__}")
                             event.video_saver += 1
-                        if event.video_saver < 1 and event.log_saver < 1:
-                            event.output_folder_path = None
-                        print(f"流程进入后event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}")
-
+                        print(f"流程进入后event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}, event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}")
+                        event.output_folder_path = folder_creator.create_folder(config['output_folder'])
                 except Exception as inner_e:
                     print(f"An error occurred inside loop: {inner_e}")
         except KeyboardInterrupt:

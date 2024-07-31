@@ -19,6 +19,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
     # 获取行号
     line_number = caller_frame.f_lineno
     """缓存摄像头的视频流"""
+    event.video_saver += 1
     # 打开RTSP流
     cap = cv2.VideoCapture(rtsp_url)
 
@@ -39,6 +40,8 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 
     # 创建一个双端队列来存储帧
     frame_buffer = deque(maxlen=video_length * 20)  # 假设20 fps
+
+    print(f"流程进入save_video前event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}, event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}")
 
     try:
         while True:
@@ -77,6 +80,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
                 print("视频保存完成")
                 event.video_saver -= 1
                 print(f"event.video_saver: {event.video_saver}",f" File: {__name__}, Line: {line_number},Function: {function_name},")
+                print(f"流程进入save_video后event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}, event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}")
 
     finally:
         # 释放VideoCapture对象
