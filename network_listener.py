@@ -33,6 +33,8 @@ def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
                     data, _ = server_socket.recvfrom(1024)
                     if data.decode() == signal:
                         print(f'收到来自{ip}:{port}的信号: {data.decode()}')
+                        event.usage_count += 1
+                        print(f"event.usage_count: {event.usage_count}")
                         print(f"流程进入前event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}")
                         event.output_folder_path = folder_creator.create_folder(config['output_folder'])
                         print (f"event流程已进入create_folder output_folder_path:{event.output_folder_path}")

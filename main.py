@@ -11,8 +11,9 @@ class Event:
     output_folder_path: str
     log_saver: int
     video_saver: int
+    usage_count: int
     lock: Lock = Lock()  # 添加锁
-event = Event(None, 0, 0)
+event = Event(None, 0, 0, 0)
 
 # 主程序入口
 def main():

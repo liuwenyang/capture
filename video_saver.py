@@ -3,10 +3,21 @@ import cv2
 from datetime import datetime
 import os
 from collections import deque
+import inspect
 
+    
 def save_video(rtsp_url, video_length=30, video_name='default'):
     from main import event
-
+    # 获取当前栈帧信息
+    frame = inspect.currentframe()
+    # 获取调用者的栈帧信息
+    caller_frame = frame.f_back
+    # 获取函数名
+    function_name = caller_frame.f_code.co_name
+    # 获取文件名
+    file_name = caller_frame.f_code.co_filename
+    # 获取行号
+    line_number = caller_frame.f_lineno
     """缓存摄像头的视频流"""
     # 打开RTSP流
     cap = cv2.VideoCapture(rtsp_url)
@@ -52,7 +63,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
                 # 构建输出视频文件的完整路径
                 output_file = os.path.join(event.output_folder_path, f"{video_name}_{current_time}.mp4")
                 
-                print(f"保存之前{video_length}秒的视频到 {output_file}...")
+                print(f"保存之前{video_length}秒的视频到 {output_file}开始")
                 
                 # 创建VideoWriter对象
                 out = cv2.VideoWriter(output_file, fourcc, 20.0, (frame_width, frame_height))
@@ -65,11 +76,14 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
                 out.release()
                 print("视频保存完成")
                 event.video_saver -= 1
+                print(f"event.video_saver: {event.video_saver}",f" File: {__name__}, Line: {line_number},Function: {function_name},")
 
     finally:
         # 释放VideoCapture对象
         cap.release()
         cv2.destroyAllWindows()
+        event.video_saver -= 1
+        print(f"event.video_saver: {event.video_saver}",f" File: {__name__}, Line: {line_number},Function: {function_name},")
 
 
 
