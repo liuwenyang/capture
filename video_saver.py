@@ -8,16 +8,18 @@ import inspect
     
 def save_video(rtsp_url, video_length=30, video_name='default'):
     from main import event
-    # 获取当前栈帧信息
-    frame = inspect.currentframe()
-    # 获取调用者的栈帧信息
-    caller_frame = frame.f_back
-    # 获取函数名
-    function_name = caller_frame.f_code.co_name
-    # 获取文件名
-    file_name = caller_frame.f_code.co_filename
-    # 获取行号
-    line_number = caller_frame.f_lineno
+    # 获取当前函数名
+    current_function = inspect.currentframe().f_code.co_name
+    
+    # 获取当前文件名
+    current_file = inspect.getfile(inspect.currentframe())
+    
+    # 获取当前行号
+    current_line = inspect.currentframe().f_lineno
+    
+    # 获取当前进程ID
+    current_process = os.getpid()
+
     """缓存摄像头的视频流"""
     event.video_saver += 1
     # 打开RTSP流
@@ -28,6 +30,8 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
         print(f"无法打开{rtsp_url}的RTSP流")
         event.video_saver -= 1
         return
+    else:
+        print(f"开始缓存{rtsp_url}{video_name}的视频帧...")
 
     # 获取视频的帧宽度和高度
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -36,12 +40,12 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
     # 定义视频编解码器
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-    print(f"开始缓存{rtsp_url}{video_name}的视频帧...")
+    
 
     # 创建一个双端队列来存储帧
     frame_buffer = deque(maxlen=video_length * 20)  # 假设20 fps
 
-    print(f"流程进入save_video前event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}, event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}")
+    print(f"流程进入save_video前event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}, event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}, Function: {current_function}, File: {current_file}, Line: {current_line}, Process: {current_process}")
 
     try:
         while True:
@@ -79,7 +83,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
                 out.release()
                 print("视频保存完成")
                 event.video_saver -= 1
-                print(f"event.video_saver: {event.video_saver}",f" File: {__name__}, Line: {line_number},Function: {function_name},")
+                print(f"event.video_saver: {event.video_saver}, Function: {current_function}, File: {current_file}, Line: {current_line}, Process: {current_process}")
                 print(f"流程进入save_video后event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}, event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}")
 
     finally:
@@ -87,22 +91,22 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
         cap.release()
         cv2.destroyAllWindows()
         event.video_saver -= 1
-        print(f"event.video_saver: {event.video_saver}",f" File: {__name__}, Line: {line_number},Function: {function_name},")
+        print(f"event.video_saver: {event.video_saver}, Function: {current_function}, File: {current_file}, Line: {current_line}, Process: {current_process}")
+
 
 
 
 
 def start_all_cameras(config):
     from main import event
-    threads = []
+    event.log_saver_threads = []
     for camera in config['camera']:
-        print(f"开始缓存{config['camera'][camera]['name']}的视频流...")
+        #print(f"开始缓存{config['camera'][camera]['name']}的视频流...")
         t = threading.Thread(target=save_video, args=(config['camera'][camera]['rtsp_url'], config['camera'][camera]['video_length'], config['camera'][camera]['name']))
-        threads.append(t)
+        event.log_saver_threads.append(t)
         t.start()
 
-    for t in threads:
+    for t in event.log_saver_threads:
         t.join()
-
 if __name__ == '__main__':
     start_all_cameras()

@@ -35,12 +35,15 @@ def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
                         print(f'收到来自{ip}:{port}的信号: {data.decode()}')
                         event.usage_count += 1
                         event.video_saver = 0 ; event.log_saver = 0 ; event.output_folder_path = None
-                        for docker in config['docker']:
+
+                        event.output_folder_path = folder_creator.create_folder(config['output_folder'])
+                        
+                        for thread in event.log_saver_threads:
                             event.log_saver += 1
-                        for camera in config['camera']:
+                        for thread in event.video_saver_threads:
                             event.video_saver += 1
                         print(f"流程进入后event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}, event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}")
-                        event.output_folder_path = folder_creator.create_folder(config['output_folder'])
+                        print(event.log_saver_threads,event.video_saver_threads)
                 except Exception as inner_e:
                     print(f"An error occurred inside loop: {inner_e}")
         except KeyboardInterrupt:

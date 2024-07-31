@@ -10,10 +10,13 @@ from dataclasses import dataclass
 class Event:
     output_folder_path: str
     log_saver: int
+    log_saver_threads: list
     video_saver: int
+    video_saver_threads: list
     usage_count: int
     lock: Lock = Lock()  # 添加锁
-event = Event(None, 0, 0, 0)
+event = Event(output_folder_path=None, log_saver=0, log_saver_threads=[], video_saver=0, video_saver_threads=[], usage_count=0)
+
 
 # 主程序入口
 def main():

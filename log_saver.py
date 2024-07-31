@@ -14,7 +14,6 @@ def save_docker_logs(container_name, lines):
         print(f"容器 {container_name} 不存在")
         event.log_saver -= 1
         return
-    event.log_saver += 1
     print(f"流程进入save_docker_logs前event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}, event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}")
 
     while True:
@@ -36,16 +35,17 @@ def save_docker_logs(container_name, lines):
 
 def start_all_docker_logs(config):
     """启动所有Docker容器并保存它们的日志"""
-    threads = []
+    from main import event
+    event.log_saver_threads = []
     from main import event
     # 遍历容器ID并保存日志
     for docker in config['docker']:
         print(f"开始保存容器 {config['docker'][docker]['container_name']} 的日志")
         t = threading.Thread(target=save_docker_logs, args=(config['docker'][docker]['container_name'], config['docker'][docker]['log_lines']))
-        threads.append(t)
+        event.log_saver_threads.append(t)
         t.start()
 
-    for t in threads:
+    for t in event.log_saver_threads:
         t.join()
 
 
