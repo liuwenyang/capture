@@ -99,14 +99,14 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 
 def start_all_cameras(config):
     from main import event
-    event.log_saver_threads = []
+    event.video_saver_threads = []
     for camera in config['camera']:
         #print(f"开始缓存{config['camera'][camera]['name']}的视频流...")
         t = threading.Thread(target=save_video, args=(config['camera'][camera]['rtsp_url'], config['camera'][camera]['video_length'], config['camera'][camera]['name']))
-        event.log_saver_threads.append(t)
+        event.video_saver_threads.append(t)
         t.start()
 
-    for t in event.log_saver_threads:
+    for t in event.video_saver_threads:
         t.join()
 if __name__ == '__main__':
     start_all_cameras()

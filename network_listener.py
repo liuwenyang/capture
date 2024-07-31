@@ -39,11 +39,16 @@ def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
                         event.output_folder_path = folder_creator.create_folder(config['output_folder'])
                         
                         for thread in event.log_saver_threads:
-                            event.log_saver += 1
+                            if thread.is_alive():
+                                event.log_saver += 1
+                            #print("1\n")
                         for thread in event.video_saver_threads:
-                            event.video_saver += 1
+                            if thread.is_alive():
+                                event.video_saver += 1
+                            #print("2\n")
                         print(f"流程进入后event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}, event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}")
-                        print(event.log_saver_threads,event.video_saver_threads)
+                        print(event.log_saver_threads)
+                        print(event.video_saver_threads)
                 except Exception as inner_e:
                     print(f"An error occurred inside loop: {inner_e}")
         except KeyboardInterrupt:
