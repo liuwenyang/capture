@@ -33,6 +33,10 @@ def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
                     data, _ = server_socket.recvfrom(1024)
                     if data.decode() == signal:
                         print(f'收到来自{ip}:{port}的信号: {data.decode()}')
+                        # 回复发送方相同信号
+                        server_socket.sendto(data, (_[0], _[1]))
+                        print(f'已回复来自{ip}:{port}的信号: {data.decode()}')
+
                         event.usage_count += 1
                         event.video_saver = 0 ; event.log_saver = 0 ; event.output_folder_path = None
 

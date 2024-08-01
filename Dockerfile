@@ -11,13 +11,14 @@ WORKDIR /app
 # 安装系统依赖项，包括编译工具
 RUN apt-get update && apt-get install -y \
     gcc \
-    vi \
+    vim-tiny \
     libopencv-dev \
     ffmpeg \
     libblas-dev \
     liblapack-dev \
     libavutil-dev \
     gfortran \
+    docker.io \
     && rm -rf /var/lib/apt/lists/*
 
 # 升级 pip 并安装 Python 依赖项，使用清华源

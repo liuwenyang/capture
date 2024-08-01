@@ -1,4 +1,4 @@
-output_folder: "D:\\MatrixSoftware\\项目现场同步资料\\补连塔\\.测试记录表\\7.28"
+output_folder: r"D:\MatrixSoftware\项目现场同步资料\补连塔"
 camera:
   0:
     name: "526摄像机_装车南料位西"
