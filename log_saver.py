@@ -44,11 +44,10 @@ def start_all_docker_logs(config):
 
         t.start()
         print(f"event.log_saver_threads: {event.log_saver_threads}")
-    # 使用线程对象来调用 join() 方法
+    # 在所有线程启动后，使用join()确保主线程等待所有子线程完成
     for thread_id, thread in event.log_saver_threads.items():
         thread.join()  # 确保所有线程执行完毕
         print(f"Thread {thread_id} has completed.")
-
 if __name__ == "__main__":
     container_name = "your_container_name"  # 替换为实际的容器名称
     lines = 100  # 替换为要保存的日志行数
