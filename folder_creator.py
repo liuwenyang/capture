@@ -15,7 +15,7 @@ def create_folder(base_path):
     return path
 
 if __name__ == "__main__":
-    create_folder(r"D:\MatrixSoftware\项目现场同步资料\补连塔\.测试记录表\7.28")
+    create_folder("D:\MatrixSoftware\项目现场同步资料\补连塔\.测试记录表\7.28")
 
 
 

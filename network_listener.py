@@ -33,24 +33,27 @@ def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
                     data, _ = server_socket.recvfrom(1024)
                     if data.decode() == signal:
                         print(f'收到来自{ip}:{port}的信号: {data.decode()}')
-                        # 回复发送方相同信号
-                        server_socket.sendto(data, (_[0], _[1]))
-                        print(f'已回复来自{ip}:{port}的信号: {data.decode()}')
-
+                        # 回复发送方相同信号+1
+                        server_socket.sendto(str(int(signal) + 1).encode(), (_))
+                        print(f'回复来自{ip}:{port}的信号: {str(int(signal) + 1)}')
+                        # 更新event.usage_count
                         event.usage_count += 1
-                        event.video_saver = 0 ; event.log_saver = 0 ; event.output_folder_path = None
-
                         event.output_folder_path = folder_creator.create_folder(config['output_folder'])
                         
-                        for thread in event.log_saver_threads:
+                        # 更新log_saver_threads字典
+                        for thread_name, thread in event.log_saver_threads.items():
                             if thread.is_alive():
-                                event.log_saver += 1
-                            #print("1\n")
-                        for thread in event.video_saver_threads:
+                                event.log_saver_threads[thread_name] = 1
+                            else:
+                                event.log_saver_threads[thread_name] = 0
+
+                        # 更新video_saver_threads字典
+                        for thread_name, thread in event.video_saver_threads.items():
                             if thread.is_alive():
-                                event.video_saver += 1
-                            #print("2\n")
-                        print(f"流程进入后event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}, event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}")
+                                event.video_saver_threads[thread_name] = 1
+                            else:
+                                event.video_saver_threads[thread_name] = 0
+                        print(f"流程进入后 event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}")
                         print(event.log_saver_threads)
                         print(event.video_saver_threads)
                 except Exception as inner_e:

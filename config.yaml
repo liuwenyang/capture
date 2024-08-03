@@ -1,13 +1,13 @@
-output_folder: r"D:\MatrixSoftware\项目现场同步资料\补连塔"
+output_folder: "D:\\MatrixSoftware\\项目现场同步资料\\补连塔"
 camera:
   0:
     name: "526摄像机_装车南料位西"
     rtsp_url: "rtsp://admin:blt12345@10.226.13.40:554/h264/ch1/main/av_stream"
     video_length: 30  # 单位秒
   1:
-    name: "526摄像机_装车南料位东"
-    rtsp_url: "rtsp://admin:blt12345@10.226.13.41:554/h264/ch1/main/av_stream"
-    video_length: 30  # 单位秒
+    name: "526工控机"
+    rtsp_url: "rtsp://10.226.13.244:8554/desktop"
+    video_length: 40  # 单位秒
 docker:
   0:
     container_name: "cli"

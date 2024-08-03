@@ -1,11 +1,30 @@
 import threading
+from time import sleep
 import cv2
 from datetime import datetime
 import os
 from collections import deque
 import inspect
+'''
+OpenCV窗口处理错误：
+cv2.error: OpenCV(...) error: The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. 
+这说明OpenCV未配置用于显示窗口。这个问题在无图形界面的Docker环境中常见，因为缺少GUI支持库。
+在无图形界面的环境中运行时（例如Docker中），如果不需要显示窗口，可以跳过 cv2.destroyAllWindows() 或者在构建时安装必要的GUI支持库。
+'''
+# Check if running in a headless environment
+if hasattr(cv2, 'getBuildInformation'):
+    build_info = cv2.getBuildInformation()
+    if 'Video I/O:' in build_info and 'GUI:' not in build_info:
+        def destroy_windows():
+            pass
+    else:
+        def destroy_windows():
+            cv2.destroyAllWindows()
+else:
+    def destroy_windows():
+        cv2.destroyAllWindows()
 
-    
+
 def save_video(rtsp_url, video_length=30, video_name='default'):
     from main import event
     # 获取当前函数名
@@ -21,14 +40,13 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
     current_process = os.getpid()
 
     """缓存摄像头的视频流"""
-    event.video_saver += 1
     # 打开RTSP流
     cap = cv2.VideoCapture(rtsp_url)
 
     # 检查是否成功打开流
     if not cap.isOpened():  
         print(f"无法打开{rtsp_url}的RTSP流")
-        event.video_saver -= 1
+        event.video_saver_threads[threading.get_ident()] = None
         return
     else:
         print(f"开始缓存{rtsp_url}{video_name}的视频帧...")
@@ -45,7 +63,6 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
     # 创建一个双端队列来存储帧
     frame_buffer = deque(maxlen=video_length * 20)  # 假设20 fps
 
-    print(f"流程进入save_video前event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}, event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}, Function: {current_function}, File: {current_file}, Line: {current_line}, Process: {current_process}")
 
     try:
         while True:
@@ -55,14 +72,14 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
             # 检查是否成功读取帧
             if not ret:
                 print("无法读取帧")
-                event.video_saver -= 1
+                event.video_saver_threads[threading.get_ident()] = None
                 break
 
             # 将帧添加到缓存队列
             frame_buffer.append(frame)
 
             # 如果路径非空           
-            if event.output_folder_path is not None and event.video_saver > 0:
+            if event.output_folder_path is not None and event.video_saver_threads[threading.get_ident()] is not None:
 
                 # 获取当前时间并格式化为字符串
                 now = datetime.now()
@@ -82,16 +99,16 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
                 # 释放VideoWriter对象
                 out.release()
                 print("视频保存完成")
-                event.video_saver -= 1
-                print(f"event.video_saver: {event.video_saver}, Function: {current_function}, File: {current_file}, Line: {current_line}, Process: {current_process}")
-                print(f"流程进入save_video后event.video_saver: {event.video_saver}, event.log_saver: {event.log_saver}, event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}")
+                event.video_saver_threads[threading.get_ident()] = None
+                sleep(10) # 等待其他线程完成缓存完event.video_saver-=1 , 不然最长最短间隙中还会保存一个视频
+
 
     finally:
         # 释放VideoCapture对象
         cap.release()
-        cv2.destroyAllWindows()
-        event.video_saver -= 1
-        print(f"event.video_saver: {event.video_saver}, Function: {current_function}, File: {current_file}, Line: {current_line}, Process: {current_process}")
+        destroy_windows()
+
+        event.video_saver_threads[threading.get_ident()] = None
 
 
 
@@ -99,14 +116,17 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 
 def start_all_cameras(config):
     from main import event
-    event.video_saver_threads = []
+    event.video_saver_threads = {}
     for camera in config['camera']:
         #print(f"开始缓存{config['camera'][camera]['name']}的视频流...")
         t = threading.Thread(target=save_video, args=(config['camera'][camera]['rtsp_url'], config['camera'][camera]['video_length'], config['camera'][camera]['name']))
-        event.video_saver_threads.append(t)
+        # 使用线程ID作为字典的键，值设为空（或者根据需要设置其他初始值）
+        event.video_saver_threads[t.ident] = None
         t.start()
-
-    for t in event.video_saver_threads:
-        t.join()
+        print(f"event.video_saver_threads: {event.video_saver_threads}")
+    # 使用线程对象来调用 join() 方法
+    for thread_id, thread in event.video_saver_threads.items():
+        thread.join()  # 确保所有线程执行完毕
+        print(f"Thread {thread_id} has completed.")
 if __name__ == '__main__':
     start_all_cameras()
