@@ -125,8 +125,10 @@ def start_all_cameras(config):
         t.start()
         print(f"event.video_saver_threads: {event.video_saver_threads}")
     # 使用线程对象来调用 join() 方法
-    for thread_id, thread in event.video_saver_threads.items():
-        thread.join()  # 确保所有线程执行完毕
-        print(f"Thread {thread_id} has completed.")
+    for t in threading.enumerate():
+        if t.ident in event.video_saver_threads:
+            t.join()
+            print(f"event.video_saver_threads: {event.video_saver_threads}")
+
 if __name__ == '__main__':
     start_all_cameras()
