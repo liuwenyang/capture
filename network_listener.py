@@ -1,10 +1,6 @@
-from fileinput import filename
 import socket
-from tokenize import Binnumber
 import folder_creator
-from config_loader import config
-from log_saver import start_all_docker_logs
-
+from log import log_info
 
 class SocketServer:
     def __init__(self, ip='127.0.0.1', port=12345):
@@ -52,10 +48,9 @@ def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
                             if thread.is_alive():
                                 event.video_saver_threads[thread_name] = 1
                             else:
-                                event.video_saver_threads[thread_name] = 0
-                        print(f"流程进入后 event.output_folder_path: {event.output_folder_path}, event.usage_count: {event.usage_count}")
-                        print(event.log_saver_threads)
-                        print(event.video_saver_threads)
+                               event.video_saver_threads[thread_name] = 0
+
+                        log_info(f"流程进入后 event.output_folder_path:{event.output_folder_path}, event.usage_count: {event.usage_count}")
                 except Exception as inner_e:
                     print(f"An error occurred inside loop: {inner_e}")
         except KeyboardInterrupt:

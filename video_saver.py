@@ -1,10 +1,9 @@
 import threading
-from time import sleep
 import cv2
 from datetime import datetime
 import os
 from collections import deque
-import inspect
+from log import log_info
 '''
 OpenCV窗口处理错误：
 cv2.error: OpenCV(...) error: The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. 
@@ -27,17 +26,7 @@ else:
 
 def save_video(rtsp_url, video_length=30, video_name='default'):
     from main import event
-    # 获取当前函数名
-    current_function = inspect.currentframe().f_code.co_name
-    
-    # 获取当前文件名
-    current_file = inspect.getfile(inspect.currentframe())
-    
-    # 获取当前行号
-    current_line = inspect.currentframe().f_lineno
-    
-    # 获取当前进程ID
-    current_process = os.getpid()
+
 
     """缓存摄像头的视频流"""
     # 打开RTSP流
@@ -58,7 +47,6 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
     # 定义视频编解码器
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-    
 
     # 创建一个双端队列来存储帧
     frame_buffer = deque(maxlen=video_length * 20)  # 假设20 fps
@@ -100,7 +88,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
                 out.release()
                 print("视频保存完成")
                 event.video_saver_threads[threading.get_ident()] = None
-                sleep(10) # 等待其他线程完成缓存完event.video_saver-=1 , 不然最长最短间隙中还会保存一个视频
+
 
 
     finally:
@@ -116,19 +104,18 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 
 def start_all_cameras(config):
     from main import event
-    event.video_saver_threads = {}
     for camera in config['camera']:
         #print(f"开始缓存{config['camera'][camera]['name']}的视频流...")
         t = threading.Thread(target=save_video, args=(config['camera'][camera]['rtsp_url'], config['camera'][camera]['video_length'], config['camera'][camera]['name']))
         # 使用线程ID作为字典的键，值设为空（或者根据需要设置其他初始值）
-        event.video_saver_threads[t.ident] = None
+
         t.start()
-        print(f"event.video_saver_threads: {event.video_saver_threads}")
+        event.video_saver_threads[t.ident] = None #在存储线程对象之前，确保线程已经启动，这样才能确保 t.ident 返回正确的线程ID：
+        log_info(f"event.video_saver_threads: {event.video_saver_threads}")
     # 使用线程对象来调用 join() 方法
     for t in threading.enumerate():
         if t.ident in event.video_saver_threads:
             t.join()
-            print(f"event.video_saver_threads: {event.video_saver_threads}")
 
 if __name__ == '__main__':
     start_all_cameras()

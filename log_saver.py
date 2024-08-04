@@ -2,6 +2,7 @@ import subprocess
 import threading
 from datetime import datetime
 import os
+from log import log_info
 
 
 def save_docker_logs(container_name, lines):
@@ -34,21 +35,18 @@ def save_docker_logs(container_name, lines):
 def start_all_docker_logs(config):
     """启动所有Docker容器并保存它们的日志"""
     from main import event
-    event.log_saver_threads = {}
     # 遍历容器ID并保存日志
     for docker in config['docker']:
         print(f"开始保存容器 {config['docker'][docker]['container_name']} 的日志")
         t = threading.Thread(target=save_docker_logs, args=(config['docker'][docker]['container_name'], config['docker'][docker]['log_lines']))
         # 创建线程ID作为键，值为空字典
-        event.log_saver_threads[t.ident] = None
-
         t.start()
-        print(f"event.log_saver_threads: {event.log_saver_threads}")
+        event.log_saver_threads[t.ident] = None #在存储线程对象之前，确保线程已经启动，这样才能确保 t.ident 返回正确的线程ID：
+        log_info(f"event.docker_logs_threads: {event.video_saver_threads}")
     # 使用线程对象来调用 join() 方法
     for t in threading.enumerate():
         if t.ident in event.video_saver_threads:
             t.join()
-            print(f"event.video_saver_threads: {event.video_saver_threads}")
 
 if __name__ == "__main__":
     container_name = "your_container_name"  # 替换为实际的容器名称
