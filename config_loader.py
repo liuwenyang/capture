@@ -1,5 +1,5 @@
 import yaml
-import os
+from log import log_info
 """
 SingletonConfig 类：这个类实现了单例模式，并负责加载配置文件。__new__ 方法确保每次实例化该类时都返回同一个实例。
 
@@ -25,15 +25,14 @@ class SingletonConfig:
         try:
             with open(config_path, 'r', encoding='gbk') as file:
                 config = yaml.safe_load(file)
-                print('配置文件路径: {}'.format(config_path))
-                print('{}编码格式: gbk'.format(config_path))
+                log_info(f"配置文件路径: {config_path}, 编码格式: gbk")
+
         except UnicodeDecodeError:
             with open(config_path, 'r', encoding='utf-8') as file:
                 config = yaml.safe_load(file)
-                print('配置文件路径: {}'.format(config_path))
-                print('{}编码格式: utf-8'.format(config_path))
+                log_info(f"配置文件路径: {config_path}, 编码格式: gbk")
         except FileNotFoundError:
-            print('配置文件不存在: {}'.format(config_path))
+            log_info("配置文件不存在")
             exit(1)
         print(config)
         return config

@@ -6,7 +6,7 @@ import os
 # 配置日志格式和输出方式
 logging.basicConfig(
     level=logging.DEBUG,
-    format='\n%(asctime)s - %(levelname)s - %(message)s',
+    format='\n%(levelname)s - %(asctime)s - %(message)s',
     handlers=[
         logging.StreamHandler()  # 控制台输出
     ]

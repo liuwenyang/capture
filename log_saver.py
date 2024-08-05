@@ -12,7 +12,7 @@ def save_docker_logs(container_name, lines):
     result = subprocess.run(['docker', 'ps', '-q', '--filter', f'name={container_name}'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     if result.returncode != 0 or not result.stdout.strip():
-        print(f"容器 {container_name} 不存在")
+        log_info(f"容器 {container_name} 不存在")
         event.log_saver_threads [threading.get_ident()] = None
         return
     while True:
@@ -29,7 +29,7 @@ def save_docker_logs(container_name, lines):
             with open(full_path, 'w') as file:
                 subprocess.run(['docker', 'logs', '-t', '--tail', str(lines), container_name], stdout=file)
                 event.log_saver_threads [threading.get_ident()] = None
-            print(f"容器 {container_name} 的日志已保存到 {full_path}")
+            log_info(f"容器 {container_name} 的日志已保存到 {full_path}")
 
 
 def start_all_docker_logs(config):
@@ -37,7 +37,7 @@ def start_all_docker_logs(config):
     from main import event
     # 遍历容器ID并保存日志
     for docker in config['docker']:
-        print(f"开始保存容器 {config['docker'][docker]['container_name']} 的日志")
+        log_info(f"开始保存容器 {config['docker'][docker]['container_name']} 的日志")
         t = threading.Thread(target=save_docker_logs, args=(config['docker'][docker]['container_name'], config['docker'][docker]['log_lines']))
         # 创建线程ID作为键，值为空字典
         t.start()

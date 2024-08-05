@@ -34,11 +34,11 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 
     # 检查是否成功打开流
     if not cap.isOpened():  
-        print(f"无法打开{rtsp_url}的RTSP流")
+        log_info(f"无法打开{rtsp_url}的RTSP流")
         event.video_saver_threads[threading.get_ident()] = None
         return
     else:
-        print(f"开始缓存{rtsp_url}{video_name}的视频帧...")
+        log_info(f"开始缓存{rtsp_url}{video_name}的视频帧...")
 
     # 获取视频的帧宽度和高度
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -59,7 +59,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 
             # 检查是否成功读取帧
             if not ret:
-                print("无法读取帧")
+                log_info(f"无法读取帧")
                 event.video_saver_threads[threading.get_ident()] = None
                 break
 
@@ -74,9 +74,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
                 current_time = now.strftime("%Y年%m月%d日") + f"{now.hour}时{now.minute}分{now.second}秒"
                 # 构建输出视频文件的完整路径
                 output_file = os.path.join(event.output_folder_path, f"{video_name}_{current_time}.mp4")
-                
-                print(f"保存之前{video_length}秒的视频到 {output_file}开始")
-                
+                log_info(f"保存之前{video_length}秒的视频到 {output_file}开始")
                 # 创建VideoWriter对象
                 out = cv2.VideoWriter(output_file, fourcc, 20.0, (frame_width, frame_height))
                 
@@ -86,7 +84,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 
                 # 释放VideoWriter对象
                 out.release()
-                print("视频保存完成")
+                log_info(f"保存之前{video_length}秒的视频到 {output_file}完成")
                 event.video_saver_threads[threading.get_ident()] = None
 
 
@@ -105,7 +103,6 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 def start_all_cameras(config):
     from main import event
     for camera in config['camera']:
-        #print(f"开始缓存{config['camera'][camera]['name']}的视频流...")
         t = threading.Thread(target=save_video, args=(config['camera'][camera]['rtsp_url'], config['camera'][camera]['video_length'], config['camera'][camera]['name']))
         # 使用线程ID作为字典的键，值设为空（或者根据需要设置其他初始值）
 
