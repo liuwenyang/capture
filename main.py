@@ -5,7 +5,7 @@ from network_listener import listen_for_signal
 from video_saver import start_all_cameras
 from threading import Lock
 from dataclasses import dataclass
-
+from signal_listener import listen_for_keyboard_input
 @dataclass
 class Event:
     output_folder_path: str
@@ -37,6 +37,9 @@ def main():
     # 启动网络监听线程
     listener_thread = threading.Thread(target=listen_for_signal, args=('127.0.0.1', 12345, '0001'))
     listener_thread.start()
+
+    #启动信号监听,不使用线程 堵塞
+    listen_for_keyboard_input()
 
     # 退出时清理资源
     def cleanup():

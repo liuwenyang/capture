@@ -92,7 +92,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
     finally:
         # 释放VideoCapture对象
         cap.release()
-        destroy_windows()
+        #destroy_windows()
 
         event.video_saver_threads[threading.get_ident()] = None
 
