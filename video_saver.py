@@ -3,7 +3,7 @@ import cv2
 from datetime import datetime
 import os
 from collections import deque
-from log import log_info
+from log import Log
 '''
 OpenCV窗口处理错误：
 cv2.error: OpenCV(...) error: The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. 
@@ -34,11 +34,11 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 
     # 检查是否成功打开流
     if not cap.isOpened():  
-        log_info(f"无法打开{rtsp_url}的RTSP流")
+        Log.debug(f"无法打开{rtsp_url}的RTSP流")
         event.video_saver_threads[threading.get_ident()] = None
         return
     else:
-        log_info(f"开始缓存{rtsp_url}{video_name}的视频帧...")
+        Log.debug(f"开始缓存{rtsp_url}{video_name}的视频帧...")
 
     # 获取视频的帧宽度和高度
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -59,7 +59,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 
             # 检查是否成功读取帧
             if not ret:
-                log_info(f"无法读取帧")
+                Log.debug(f"无法读取帧")
                 event.video_saver_threads[threading.get_ident()] = None
                 break
 
@@ -74,7 +74,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
                 current_time = now.strftime("%Y年%m月%d日") + f"{now.hour}时{now.minute}分{now.second}秒"
                 # 构建输出视频文件的完整路径
                 output_file = os.path.join(event.output_folder_path, f"{video_name}_{current_time}.mp4")
-                log_info(f"保存之前{video_length}秒的视频到 {output_file}开始")
+                Log.debug(f"保存之前{video_length}秒的视频到 {output_file}开始")
                 # 创建VideoWriter对象
                 out = cv2.VideoWriter(output_file, fourcc, 20.0, (frame_width, frame_height))
                 
@@ -84,7 +84,7 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
 
                 # 释放VideoWriter对象
                 out.release()
-                log_info(f"保存之前{video_length}秒的视频到 {output_file}完成")
+                Log.debug(f"保存之前{video_length}秒的视频到 {output_file}完成")
                 event.video_saver_threads[threading.get_ident()] = None
 
 
@@ -108,7 +108,7 @@ def start_all_cameras(config):
 
         t.start()
         event.video_saver_threads[t.ident] = None #在存储线程对象之前，确保线程已经启动，这样才能确保 t.ident 返回正确的线程ID：
-        log_info(f"event.video_saver_threads: {event.video_saver_threads}")
+        Log.debug(f"event.video_saver_threads: {event.video_saver_threads}")
     # 使用线程对象来调用 join() 方法
     for t in threading.enumerate():
         if t.ident in event.video_saver_threads:

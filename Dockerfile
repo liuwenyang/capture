@@ -31,3 +31,5 @@ COPY . .
 
 # 运行脚本
 CMD ["python3", "main.py"]
+# 简单的空循环来保持容器活动
+#CMD ["sh", "-c", "while :; do sleep 1; done"]

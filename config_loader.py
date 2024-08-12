@@ -1,5 +1,7 @@
+import platform
+import os
 import yaml
-from log import log_info
+from log import Log
 """
 SingletonConfig 类：这个类实现了单例模式，并负责加载配置文件。__new__ 方法确保每次实例化该类时都返回同一个实例。
 
@@ -25,26 +27,41 @@ class SingletonConfig:
         try:
             with open(config_path, 'r', encoding='gbk') as file:
                 config = yaml.safe_load(file)
-                log_info(f"配置文件路径: {config_path}, 编码格式: gbk")
+                Log.debug(f"配置文件路径: {config_path}, 编码格式: gbk")
 
         except UnicodeDecodeError:
             with open(config_path, 'r', encoding='utf-8') as file:
                 config = yaml.safe_load(file)
-                log_info(f"配置文件路径: {config_path}, 编码格式: gbk")
+                Log.debug(f"配置文件路径: {config_path}, 编码格式: utf-8")
         except FileNotFoundError:
-            log_info("配置文件不存在")
+            Log.debug("配置文件不存在")
             exit(1)
         print(config)
         return config
 
     def get_config(self):
         return self._config
+# 检查操作系统
+current_os = platform.system()
+
+if current_os == "Linux":
+    Log.debug("当前系统是 Linux")
     # 加载配置文件
-config_singleton = SingletonConfig("D:\开源项目\capture\config.yaml")
-config = config_singleton.get_config()
+    config_singleton = SingletonConfig("/home/storage/capture/.config/config.yaml")
+    config = config_singleton.get_config()
+    os.system("echo 'This is Linux'")
+elif current_os == "Windows":
+    Log.debug("当前系统是 Windows")
+    # 加载配置文件
+    config_singleton = SingletonConfig("D:\MatrixSoftware\项目现场同步资料\补连塔\.测试记录表\config.yaml")
+    config = config_singleton.get_config()
+    os.system("echo This is Windows")
+else:
+    Log.debug("当前系统不是 Linux 或 Windows")
+
 # 使用单例模式获取配置
 if __name__ == '__main__':
-    config_singleton = SingletonConfig(r"D:\开源项目\capture\config.yaml")
+    config_singleton = SingletonConfig('/home/storage/capture/.config/config.yaml')
     config = config_singleton.get_config()
     # 检查我的config.yaml里有多少个camera
     # for camera in config['camera']:

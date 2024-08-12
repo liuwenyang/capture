@@ -6,6 +6,8 @@ from video_saver import start_all_cameras
 from threading import Lock
 from dataclasses import dataclass
 from signal_listener import listen_for_keyboard_input
+from file_listener import listen_for_file_signal
+
 @dataclass
 class Event:
     output_folder_path: str
@@ -35,11 +37,16 @@ def main():
     log_thread.start()
 
     # 启动网络监听线程
-    listener_thread = threading.Thread(target=listen_for_signal, args=('127.0.0.1', 12345, '0001'))
-    listener_thread.start()
+    network_listener_thread = threading.Thread(target=listen_for_signal, args=('127.0.0.1', 12345, '0001'))
+    network_listener_thread.start()
 
-    #启动信号监听,不使用线程 堵塞
-    listen_for_keyboard_input()
+    # 启动键盘监听线程
+    signal_listener_thread = threading.Thread(target=listen_for_keyboard_input)
+    signal_listener_thread.start()
+
+    #启动文件监听线程
+    listen_for_file_signal_thread = threading.Thread(target=listen_for_file_signal, args=('/home/storage/capture/start.txt',))
+    listen_for_file_signal_thread.start()
 
     # 退出时清理资源
     def cleanup():
@@ -47,7 +54,10 @@ def main():
         # 在这里添加进程的清理代码
 
     try:
-        listener_thread.join()
+        network_listener_thread.join()
+        log_thread.join()
+        signal_listener_thread.join()
+        listen_for_file_signal_thread.join()
         video_thread.join()
     except KeyboardInterrupt:
         cleanup()

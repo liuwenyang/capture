@@ -1,7 +1,6 @@
 import socket
-import folder_creator
-from log import log_info
-import threading
+from log import Log
+from action import action1
 
 class SocketServer:
     def __init__(self, ip='127.0.0.1', port=12345):
@@ -29,40 +28,19 @@ def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
                 try:
                     data, _ = server_socket.recvfrom(1024)
                     if data.decode() == signal:
-                        log_info(f"收到来自{ip}:{port}的信号: {data.decode()}")
+                        Log.debug(f"收到来自{ip}:{port}的信号: {data.decode()}")
                         # 回复发送方相同信号+1
                         server_socket.sendto(str(int(signal) + 1).encode(), (_))
-                        log_info(f"回复来自{ip}:{port}的信号: {str(int(signal) + 1)}")
-                        # 更新event.usage_count
-                        event.usage_count += 1
-                        event.output_folder_path = folder_creator.create_folder(config['output_folder'])
-                        
-                        # 更新video_saver_threads字典
-                        for thread_id in event.video_saver_threads.keys():
-                            thread = threading._active.get(thread_id)
-                            if thread is not None and thread.is_alive():
-                                event.video_saver_threads[thread_id] = 1
-                            else:
-                                event.video_saver_threads[thread_id] = 0
-
-
-                        # 更新log_saver_threads字典
-                        for thread_id in event.log_saver_threads.keys():
-                            thread = threading._active.get(thread_id)
-                            if thread is not None and thread.is_alive():
-                                event.log_saver_threads[thread_id] = 1
-                            else:
-                                event.log_saver_threads[thread_id] = 0
-
-
-                        log_info(f"流程进入后 event.output_folder_path:{event.output_folder_path}, event.usage_count: {event.usage_count}")
+                        Log.debug(f"回复来自{ip}:{port}的信号: {str(int(signal) + 1)}")
+                        action1()
+                        Log.debug(f"流程进入后 event.output_folder_path:{event.output_folder_path}, event.usage_count: {event.usage_count}")
                 except Exception as inner_e:
                     print(f"An error occurred inside loop: {inner_e}")
         except KeyboardInterrupt:
-            log_info("Server interrupted by user.")
+            Log.debug("Server interrupted by user.")
 
         except Exception as e:
-            log_info(f"An error occurred: {e}")
+            Log.debug(f"An error occurred: {e}")
         finally:
             event.output_folder_path = None
 
