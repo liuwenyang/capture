@@ -12,6 +12,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     gcc \
     vim-tiny \
+    procps \
     libopencv-dev \
     ffmpeg \
     libblas-dev \
