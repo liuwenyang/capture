@@ -1,6 +1,9 @@
 from log import Log
 import threading
-
+'''
+为了多个监控调用一样的服务
+将服务写在action.py中
+'''
 def action1():
     import folder_creator
 
