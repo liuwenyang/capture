@@ -11,7 +11,8 @@ class SocketServer:
     def __enter__(self):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_socket.bind((self.ip, self.port))
-        print(f"Listening on {self.ip}:{self.port}")
+        Log.info(f"Server listening on {self.ip}:{self.port}")
+
         return self.server_socket
 
     def __exit__(self, exc_type, exc_val, exc_tb):

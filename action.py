@@ -1,5 +1,7 @@
 from log import Log
 import threading
+import platform
+
 '''
 为了多个监控调用一样的服务
 将服务写在action.py中
@@ -23,13 +25,22 @@ def action1():
         else:
             event.video_saver_threads[thread_id] = 0
 
-    # 更新log_saver_threads字典
-    for thread_id in event.log_saver_threads.keys():
-        thread = threading._active.get(thread_id)
-        if thread is not None and thread.is_alive():
-            event.log_saver_threads[thread_id] = 1
-        else:
-            event.log_saver_threads[thread_id] = 0
+    #保存日志到文件
+    # 检查操作系统
+    current_os = platform.system()
+
+    if current_os == "Linux":
+        Log.debug("当前系统是 Linux")
+        from log_saver import save_docker_logs
+        save_docker_logs()
+
+    elif current_os == "Windows":
+        Log.debug("当前系统是 Windows")
+        from ssh_executer import save_all_docker_logs
+        save_all_docker_logs()
+
+    else:
+        Log.debug("当前系统不是 Linux 或 Windows")
 
     Log.debug("结束action1")
 if __name__ == '__main__':

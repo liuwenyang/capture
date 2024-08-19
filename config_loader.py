@@ -1,5 +1,4 @@
 import platform
-import os
 import yaml
 from log import Log
 """
@@ -49,13 +48,14 @@ if current_os == "Linux":
     # 加载配置文件
     config_singleton = SingletonConfig("/home/storage/capture/.config/config.yaml")
     config = config_singleton.get_config()
-    os.system("echo 'This is Linux'")
+
 elif current_os == "Windows":
     Log.debug("当前系统是 Windows")
     # 加载配置文件
+    #config_singleton = SingletonConfig("D:\开源项目\capture\config.yaml")
     config_singleton = SingletonConfig("D:\MatrixSoftware\项目现场同步资料\补连塔\.测试记录表\config.yaml")
     config = config_singleton.get_config()
-    os.system("echo This is Windows")
+
 else:
     Log.debug("当前系统不是 Linux 或 Windows")
 

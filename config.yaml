@@ -18,12 +18,22 @@ camera:
     video_length: 30  # 单位秒
 docker:
   0:
-    hosts: "10.226.13.24"
+    hosts_name: 715装车
+    hosts: 10.226.13.24
+    password: "matrixai@2"
     container_name: "cli"
     log_lines: 2000 # 单位行
   1:
-    hosts: "10.226.13.24"
+    hosts_name: 715装车
+    hosts: 10.226.13.24
+    password: "matrixai@2"
     container_name: "ser"
+    log_lines: 2000 # 单位行
+  2:
+    hosts_name: 715定量仓
+    hosts: 10.226.13.24
+    password: "matrixai@2"
+    container_name: "dlc"
     log_lines: 2000 # 单位行
 
 
