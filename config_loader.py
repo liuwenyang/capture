@@ -53,7 +53,9 @@ elif current_os == "Windows":
     Log.debug("当前系统是 Windows")
     # 加载配置文件
     #config_singleton = SingletonConfig("D:\开源项目\capture\config.yaml")
-    config_singleton = SingletonConfig("D:\MatrixSoftware\项目现场同步资料\补连塔\.测试记录表\config.yaml")
+    #config_singleton = SingletonConfig("D:\MatrixSoftware\项目现场同步资料\补连塔\.测试记录表\config.yaml")
+    config_singleton = SingletonConfig("D:\capture\config.yaml")
+
     config = config_singleton.get_config()
 
 else:
