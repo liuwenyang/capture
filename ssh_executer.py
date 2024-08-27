@@ -1,3 +1,4 @@
+from datetime import datetime  # 显式导入datetime类
 import paramiko
 import os
 # from config_loader import load_config
@@ -33,7 +34,10 @@ def save_docker_logs(container_name, hosts_name,log_lines, ssh_client):
     """将远程Docker容器的日志保存到本地指定路径"""
     from main import event
     # 远程服务器上的临时文件路径
-    remote_temp_log_file = f"/tmp/{hosts_name}_{container_name}_logs.txt"
+    # 获取当前时间并格式化为字符串
+    now = datetime.now()
+    current_time = now.strftime("%Y年%m月%d日") + f"{now.hour}时{now.minute}分{now.second}秒"
+    remote_temp_log_file = f"/tmp/{hosts_name}_{container_name}_{current_time}.logs.txt"
 
     # 生成 Docker 日志命令，并将日志输出保存到远程的临时文件中
     cmd = f"docker logs --tail {log_lines} {
@@ -43,9 +47,12 @@ def save_docker_logs(container_name, hosts_name,log_lines, ssh_client):
 
     # 使用SFTP将远程的日志文件下载到本地
     sftp_client = ssh_client.open_sftp()
-    local_log_file = os.path.join(event.output_folder_path, f"{hosts_name}_{container_name}_logs.txt")
+    local_log_file = os.path.join(event.output_folder_path, f"{hosts_name}_{container_name}_{current_time}.logs.txt")
     sftp_client.get(remote_temp_log_file, local_log_file)
 
+    # 删除远程的临时文件
+    sftp_client.remove(remote_temp_log_file)
+    
     # 关闭SFTP连接
     sftp_client.close()
 

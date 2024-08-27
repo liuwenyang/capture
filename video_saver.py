@@ -1,11 +1,11 @@
 import threading
 import cv2
-from datetime import datetime
+from datetime import datetime  # 显式导入datetime类
 import os
 import time
 from collections import deque
 from log import Log
-
+from display import display_frame
 '''
 OpenCV窗口处理错误：
 cv2.error: OpenCV(...) error: The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support.
@@ -67,6 +67,8 @@ def save_video(rtsp_url, video_length=30, video_name='default'):
                 # 将帧添加到缓存队列
                 frame_buffer.append(frame)
 
+            # 显示帧
+                display_frame(frame)
                 # 如果路径非空
                 if event.output_folder_path is not None and event.video_saver_threads[threading.get_ident()] is not None:
 
