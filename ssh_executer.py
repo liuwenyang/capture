@@ -1,4 +1,4 @@
-from datetime import datetime  # 显式导入datetime类
+import datetime  
 import paramiko
 import os
 # from config_loader import load_config
@@ -35,7 +35,7 @@ def save_docker_logs(container_name, hosts_name,log_lines, ssh_client):
     from main import event
     # 远程服务器上的临时文件路径
     # 获取当前时间并格式化为字符串
-    now = datetime.now()
+    now = datetime.datetime.now()
     current_time = now.strftime("%Y年%m月%d日") + f"{now.hour}时{now.minute}分{now.second}秒"
     remote_temp_log_file = f"/tmp/{hosts_name}_{container_name}_{current_time}.logs.txt"
 
