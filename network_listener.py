@@ -3,7 +3,7 @@ from log import Log
 from action import action1
 
 class SocketServer:
-    def __init__(self, ip='127.0.0.1', port=12345):
+    def __init__(self, ip='0.0.0.0', port=12345):
         self.ip = ip
         self.port = port
         self.server_socket = None
@@ -11,7 +11,8 @@ class SocketServer:
     def __enter__(self):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_socket.bind((self.ip, self.port))
-        Log.info(f"Server listening on {self.ip}:{self.port}")
+        Log.info(f"Server listening on {self.server_socket.getsockname()[0]}:{self.port}")
+
 
         return self.server_socket
 
@@ -20,7 +21,7 @@ class SocketServer:
             self.server_socket.close()
             print("Server socket closed.")
 
-def listen_for_signal(ip='127.0.0.1', port=12345, signal='0001'):
+def listen_for_signal(ip='0.0.0.0', port=12345, signal='0001'):
     from main import event
     from config_loader import config
     with SocketServer(ip, port) as server_socket:
