@@ -63,7 +63,7 @@ def save_all_docker_logs():
     from config_loader import config
     for key in config['docker']:
         docker = config['docker'][key]
-        ssh = create_ssh_instance(docker['hosts'], 'root', docker['password'])
+        ssh = create_ssh_instance(docker['hosts'], docker['username'], docker['password'])
         save_docker_logs(docker['container_name'], docker['hosts_name'], docker['log_lines'], ssh)
         ssh.close()
 if __name__ == '__main__':
