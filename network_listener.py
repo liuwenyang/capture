@@ -46,9 +46,9 @@ def listen_for_signal(ip='0.0.0.0', port=12345, signal='0001'):
         finally:
             event.output_folder_path = None
 
+def test_received_data(data):
+    print(f"Received data: {data.decode()}")
 
 if __name__ == '__main__':
-    try:
+    while True:
         listen_for_signal()
-    except Exception as e:
-        print(f"Unexpected error: {e}")

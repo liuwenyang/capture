@@ -35,7 +35,8 @@ class SingletonConfig:
         except FileNotFoundError:
             Log.debug("配置文件不存在")
             exit(1)
-        print(config)
+        # 使用 yaml.dump 打印格式化后的配置信息
+        print(yaml.dump(config, allow_unicode=True, default_flow_style=False))
         return config
 
     def get_config(self):
